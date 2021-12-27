@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update</title>
+</head>
+<body>
+    <form action="change_entry" method="POST">
+        {% csrf_token %}
+
+        <label for="">Do You Want To?</label>
+        <br>
+        <input type="radio" id="issue" name="choice" value="issue">
+        <label for="issue">Issue A Book</label>
+        <br>
+
+        <input type="radio" id="return" name="choice" value="return">
+        <label for="return">Return A Book</label>
+        <br>
+
+        <label for="">Visitor's Username</label>
+        <input type="text" name = "username" id = "username" placeholder= "Enter Visitor's Username" Required>
+        <br>
+
+        <button type="submit">Submit</button>
+
+    </form>
+</body>
+</html>

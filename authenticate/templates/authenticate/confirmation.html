@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+Hello {{ name }},
+
+One Last Step Before You Open Your Doors To Infinite Knowledge
+
+Please confirm your Email by clicking the link below:
+
+Confirmation Link: http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+{% endautoescape %}
