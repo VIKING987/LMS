@@ -1,15 +1,18 @@
-from re import template
-from authenticate import models
+from django.contrib.auth import login
 from authenticate.models import User
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, UpdateView, ListView
 from libManager.models import BookRecords
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
 
 def home(request):
     user = request.user
+    if user.is_anonymous:
+        messages.error(request, 'You Need To Be Logged In For That!!')
+        return redirect('login')
     designation = user.designation
     fname = user.fname
 
@@ -35,21 +38,36 @@ def crud(request):
 
     return redirect('home')
 
-class RecCreateView(CreateView):
-
+class RecCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    login_url = 'login'
     model = BookRecords
     #form = EntryForm()
     #context = {'form':form}
     template_name = 'libManager/create.html'
     fields = ['title', 'copies_avail', 'tags']
 
-class RecUpdateView(UpdateView):
+    def test_func(self):
+        return self.request.user.designation.lower() == 'librarian'
+
+    def handle_no_permission(self):
+        messages.error(self.request, "You Need To Be A Librarian To Do That!!")
+        return redirect('home')
+
+class RecUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     model = BookRecords
+    login_url = 'login'
     #form = EntryForm()
     #context = {'form':form}
     template_name = 'libManager/update.html'
     fields = ['title', 'copies_avail', 'tags']
+
+    def test_func(self):
+        return self.request.user.designation.lower() == 'librarian'
+
+    def handle_no_permission(self):
+        messages.error(self.request, "You Need To Be A Librarian To Do That!!")
+        return redirect('home')
 
 class RecListView(ListView):
 

@@ -20,13 +20,8 @@
 
     <form action="/login" method="post">
         {% csrf_token %}
-        <label for="">Username</label>
-        <input type="text" name = "username" id = "username" placeholder= "Enter username" Required>
-        <br>
-
-        <label for="">Password</label>
-        <input type="password" name = "pass1" id = "pass1" placeholder= "Confirm Your Password" Required>
-        <br>
+        
+        {{ form.as_p }}
         
         <button type="submit">Sign In</button>
 

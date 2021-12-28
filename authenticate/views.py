@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from . models import User
-from . forms import RegisterForm
+from . forms import RegisterForm, LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as auth_login
@@ -52,30 +52,28 @@ def register(request, pk):
     return redirect('login')
 
 class UserLoginView(FormView):
-    model = User
+    fields = '__all__'
+    form_class = LoginForm
+    template_name = 'authenticate/login.html'
+    success_url = 'libM/home'
 
-def login(request):
-
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        pass1 = request.POST.get('pass1')
-
-        user = authenticate(username = username, password = pass1)
-
+    def form_valid(self, form):
+        form_data = form.cleaned_data
+        user = authenticate(username = form_data['username'], password = form_data['password'])
         if user is not None:
-            auth_login(request, user)
-            #return render(request, home, {'fname' : fname})
-            return redirect('libM/home')
-        
+            auth_login(self.request, user)
+            return super().form_valid(form)
         else:
-            messages.error(request, "Wrong Password or Username")
-            return redirect('index')
+            messages.error(self.request, "Invalid Credentials!!")
+            return redirect('login')
 
-    return render(request, 'authenticate/login.html', {})
 
 def signout(request):
-    logout(request)
-    messages.success(request, "You Have Been Successfully Logged Out!!")
+    if request.user.is_anonymous:
+        pass
+    else:
+        logout(request)
+        messages.success(request, "You Have Been Successfully Logged Out!!")
     return redirect('index')
 
 def activate(request, uidb64, token):

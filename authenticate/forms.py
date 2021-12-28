@@ -1,7 +1,10 @@
 from django import forms
 from django import forms
+from django.db.models import fields
 from .models import User
 import re
+
+from authenticate import models
 
 def checkreqpass(password):
     f = [0,0,0]
@@ -68,3 +71,7 @@ class RegisterForm(forms.ModelForm):
                 self._errors["password"] = ["Passwords do not match!!"]
                 del form_data['password']
         return form_data
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder':'Enter username'}))
+    password = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={'placeholder':'Enter Password'}))
