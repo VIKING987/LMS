@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.urls import reverse
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -33,13 +34,14 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     username = models.CharField(max_length=10, unique=True)
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
-    fname = models.CharField(max_length=50)
-    lname = models.CharField(max_length=50)
+    fname = models.CharField(max_length=50, verbose_name='First Name')
+    lname = models.CharField(max_length=50, verbose_name='Last Name')
     dues = models.FloatField(default=0)
     issue_limit = models.IntegerField(default=5)
     books_issued_curr = models.IntegerField(default=0)
     password = models.CharField(max_length=100)
-    designation = models.CharField(max_length=10)
+    ch = (('Librarian', 'Librarian'), ('Visitor', 'Visitor'))
+    designation = models.CharField(max_length=10, choices=ch)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -61,3 +63,6 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def get_absolute_url(self):
+        return reverse('signup', kwargs={'pk':self.pk})

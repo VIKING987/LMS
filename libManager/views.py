@@ -9,14 +9,13 @@ from django.contrib import messages
 # Create your views here.
 
 def home(request):
-    
     user = request.user
     designation = user.designation
     fname = user.fname
 
-    if designation == 'librarian':
+    if designation.lower() == 'librarian':
         return render(request, 'libManager/librarian.html', {'fname':fname})
-    elif designation == 'visitor':
+    elif designation.lower() == 'visitor':
         return redirect('visitor')
 
 def crud(request):
